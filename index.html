@@ -26,7 +26,7 @@
             text-align: center;
             overflow-x: hidden;
             animation: bgGlow 3s ease-in-out infinite alternate;
-            touch-action: none; /* 스와이프 시 화면 스크롤 방지 */
+            touch-action: none;
         }
         
         @keyframes bgGlow {
@@ -79,6 +79,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             max-width: 100%;
             touch-action: none;
+            cursor: pointer; /* 터치 가능 표시 */
         }
 
         /* -------------------
@@ -218,12 +219,12 @@
         <h2 class="maze-title">🎮 햄스터의 선물 찾기 🐹</h2>
         <p class="maze-instruction">
             💛 지민이의 생일 선물을 찾아줘! 💛<br>
-            귀여운 햄스터를 움직여(방향키/터치)<br>
+            가고 싶은 방향을 터치해봐! (👆 톡!)<br>
             골 지점까지 도착하세요!
         </p>
 
         <canvas id="gameCanvas"></canvas>
-        <p class="maze-hint">💡 힌트: 벽에 부딪히지 않도록 조심히 이동하세요!</p>
+        <p class="maze-hint">💡 힌트: 햄스터 주변을 누르면 그쪽으로 이동해!</p>
     </div>
 
     <!-- 축하 화면 -->
@@ -412,31 +413,29 @@
             }
         }
 
-        // 터치 스와이프 기능 (키패드 대신)
-        let touchStartX = 0;
-        let touchStartY = 0;
-
+        // 🌟 터치 로직 (누른 방향으로 이동)
         canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
             e.preventDefault(); // 스크롤 방지
-        }, { passive: false });
 
-        canvas.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const dx = touchEndX - touchStartX;
-            const dy = touchEndY - touchStartY;
+            const rect = canvas.getBoundingClientRect();
+            const touchX = e.touches[0].clientX - rect.left;
+            const touchY = e.touches[0].clientY - rect.top;
 
-            // 터치 이동 거리가 너무 짧으면 무시 (오터치 방지)
-            if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+            // 현재 햄스터의 중심 좌표
+            const playerCenterX = player.x + TILE_SIZE / 2;
+            const playerCenterY = player.y + TILE_SIZE / 2;
 
+            // 터치한 곳과 햄스터 사이의 거리
+            const dx = touchX - playerCenterX;
+            const dy = touchY - playerCenterY;
+
+            // 가로(X) 차이가 세로(Y) 차이보다 크면 좌우 이동
             if (Math.abs(dx) > Math.abs(dy)) {
-                move(dx > 0 ? 1 : -1, 0); // 좌우
+                move(dx > 0 ? 1 : -1, 0); // 오른쪽 or 왼쪽
             } else {
-                move(0, dy > 0 ? 1 : -1); // 상하
+                move(0, dy > 0 ? 1 : -1); // 아래 or 위
             }
-        });
+        }, { passive: false });
 
         // PC 키보드 지원
         document.addEventListener('keydown', (e) => {
