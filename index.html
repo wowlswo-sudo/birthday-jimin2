@@ -18,24 +18,27 @@
             font-family: 'Jua', 'Noto Sans KR', sans-serif;
             background: linear-gradient(135deg, #FFFF99 0%, #FFFF66 50%, #FFEB3B 100%);
             color: #333;
-            min-height: 100vh;
+            min-height: 100vh; /* 화면 전체 높이 사용 */
+            
+            /* 내용이 길어지면 스크롤 가능하도록 flex 설정 변경 */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            padding: 20px 0; /* 위아래 여백 */
+            
+            /* 중요: 모바일 스크롤 가능하게 설정 */
+            overflow-y: auto; 
             overflow-x: hidden;
-            animation: bgGlow 3s ease-in-out infinite alternate;
-            touch-action: none;
         }
         
+        /* 배경 애니메이션 */
         @keyframes bgGlow {
             0% { filter: brightness(1.05); }
             100% { filter: brightness(1.15); }
         }
 
         /* -------------------
-           게임 관련 스타일
+           게임 화면 스타일
            ------------------- */
         .maze-container {
             width: 95%;
@@ -47,6 +50,9 @@
             border: 4px solid #FFD700;
             z-index: 10;
             position: relative;
+            
+            /* 화면 중앙에 오도록 */
+            margin: auto; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -62,8 +68,9 @@
         .maze-instruction {
             font-size: 1.2em;
             color: #FF69B4;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             line-height: 1.6;
+            word-break: keep-all; /* 단어 단위로 줄바꿈 */
         }
 
         .maze-hint {
@@ -78,8 +85,10 @@
             border: 4px solid #FFCA28;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             max-width: 100%;
-            touch-action: none;
-            cursor: pointer; /* 터치 가능 표시 */
+            cursor: pointer;
+            
+            /* 게임 중에는 캔버스 안에서만 스크롤 방지 */
+            touch-action: none; 
         }
 
         /* -------------------
@@ -96,6 +105,11 @@
             position: relative;
             z-index: 10;
             border: 4px solid #FFD700;
+            
+            /* 화면 중앙 정렬 및 아래 여백 확보 */
+            margin: auto;
+            margin-bottom: 50px; 
+            
             display: none; 
         }
 
@@ -115,6 +129,7 @@
             text-shadow: 3px 3px 6px rgba(255,215,0,0.5);
             margin-bottom: 20px;
             animation: bounce 2s infinite;
+            word-break: keep-all;
         }
         
         @keyframes bounce {
@@ -129,6 +144,7 @@
             margin: 20px 0;
             color: #FF69B4;
             font-weight: 600;
+            word-break: keep-all;
         }
         
         .photo-gallery {
@@ -155,8 +171,9 @@
             border: 3px solid #FFD700;
             font-size: 1.1em;
             color: #555;
-            line-height: 1.7;
+            line-height: 1.8;
             text-align: left;
+            word-break: keep-all; /* 모바일 가독성 개선 */
         }
         
         .hearts, .stars {
@@ -286,6 +303,7 @@
         let particles = [];
 
         function resize() {
+            // 모바일 화면 폭에 맞춰 캔버스 크기 조정
             const maxSize = Math.min(window.innerWidth - 60, 360);
             canvas.width = maxSize;
             canvas.height = maxSize;
@@ -395,6 +413,8 @@
                 setTimeout(() => {
                     document.getElementById('gameScreen').style.display = 'none';
                     document.getElementById('birthdayScreen').classList.add('show');
+                    // 게임 끝나면 스크롤 최상단으로 이동 (혹시 모르니)
+                    window.scrollTo(0, 0);
                     startBgAnimations();
                 }, 500);
             }
@@ -413,27 +433,24 @@
             }
         }
 
-        // 🌟 터치 로직 (누른 방향으로 이동)
+        // 터치 로직 (누른 방향으로 이동)
         canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // 스크롤 방지
+            e.preventDefault(); // 게임 화면에서는 스크롤 방지하고 게임 조작
 
             const rect = canvas.getBoundingClientRect();
             const touchX = e.touches[0].clientX - rect.left;
             const touchY = e.touches[0].clientY - rect.top;
 
-            // 현재 햄스터의 중심 좌표
             const playerCenterX = player.x + TILE_SIZE / 2;
             const playerCenterY = player.y + TILE_SIZE / 2;
 
-            // 터치한 곳과 햄스터 사이의 거리
             const dx = touchX - playerCenterX;
             const dy = touchY - playerCenterY;
 
-            // 가로(X) 차이가 세로(Y) 차이보다 크면 좌우 이동
             if (Math.abs(dx) > Math.abs(dy)) {
-                move(dx > 0 ? 1 : -1, 0); // 오른쪽 or 왼쪽
+                move(dx > 0 ? 1 : -1, 0); // 좌우
             } else {
-                move(0, dy > 0 ? 1 : -1); // 아래 or 위
+                move(0, dy > 0 ? 1 : -1); // 상하
             }
         }, { passive: false });
 
@@ -446,7 +463,6 @@
             if (e.key === 'ArrowRight') move(1, 0);
         });
 
-        // 시작
         requestAnimationFrame(gameLoop);
 
         function startBgAnimations() {
