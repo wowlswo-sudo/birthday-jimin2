@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지민아 생일 축하해♡ ! 🎉</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #FFFF99 0%, #FFFF66 50%, #FFEB3B 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow-x: hidden;
+            animation: bgGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes bgGlow {
+            0% { filter: brightness(1.05); }
+            100% { filter: brightness(1.15); }
+        }
+
+        /* 미로 게임 스타일 */
+        .maze-container {
+            max-width: 600px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(255,105,180,0.3);
+            border: 4px solid #FFD700;
+            z-index: 10;
+            position: relative;
+        }
+
+        .maze-title {
+            font-size: 2em;
+            color: #FF69B4;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255,215,0,0.3);
+        }
+
+        .maze-instruction {
+            font-size: 1.2em;
+            color: #FF69B4;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        #mazeCanvas {
+            border: 4px solid #FFD700;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255,215,0,0.4);
+            max-width: 100%;
+            touch-action: none; /* 모바일 터치 스크롤 방지 */
+        }
+
+        .maze-hint {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #666;
+        }
+        
+        /* 생일 축하 화면 (처음에는 숨김) */
+        .container {
+            max-width: 800px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(255,105,180,0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            border: 4px solid #FFD700;
+            display: none; /* 게임 클리어 전까지 안 보임 */
+        }
+
+        .container.show {
+            display: block;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        h1 {
+            font-size: 4em;
+            color: #FF69B4;
+            text-shadow: 3px 3px 6px rgba(255,215,0,0.5);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        .message {
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin: 30px 0;
+            color: #FF69B4;
+            font-weight: 600;
+        }
+        
+        .photo-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+        
+        .photo {
+            width: 500px;
+            height: 500px;
+            border-radius: 30px;
+            object-fit: cover;
+            border: 10px solid #FFD700;
+            box-shadow: 0 15px 30px rgba(255,215,0,0.6);
+            transition: transform 0.3s ease;
+        }
+        
+        .photo:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+        
+        .letter {
+            background: linear-gradient(135deg, #FFF9C4, #FFFACD);
+            padding: 35px;
+            border-radius: 25px;
+            margin: 30px 0;
+            border: 4px solid #FFD700;
+            font-size: 1.3em;
+            color: #555;
+            line-height: 1.8;
+            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
+        }
+        
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            color: #FF69B4;
+            font-size: 25px;
+            animation: floatHeart 4s ease-in-out infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes floatHeart {
+            0% { 
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .star {
+            position: absolute;
+            color: #FFD700;
+            font-size: 20px;
+            animation: twinkle 2s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            .photo { width: 90%; height: auto; }
+            .maze-title { font-size: 1.5em; }
+            .maze-instruction { font-size: 1em; }
+        }
+        
+        .music-note {
+            font-size: 3em;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .heart-deco {
+            font-size: 2.5em;
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin: 0 10px;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="hearts" id="hearts"></div>
+    
+    <!-- 미로 게임 화면 -->
+    <div class="maze-container" id="mazeScreen">
+        <h2 class="maze-title">🎮 햄스터의 선물 찾기 🐹</h2>
+        <p class="maze-instruction">
+            💛 지민이의 생일 선물을 찾아줘! 💛<br>
+            귀여운 햄스터를 움직여(방향키/터치)<br>
+            골 지점까지 도착하세요!
+        </p>
+        <canvas id="mazeCanvas" width="500" height="500"></canvas>
+        <p class="maze-hint">💡 힌트: 벽에 부딪히지 않도록 조심히 이동하세요!</p>
+    </div>
+
+    <!-- 생일 축하 화면 -->
+    <div class="container" id="birthdayScreen">
+        <h1>💛 지민아 생일 축하해 💛</h1>
+        
+        <div class="heart-deco">💕💖💕</div>
+        
+        <p class="message">
+            생일은 항상 밝고 따뜻한 너에게<br>
+            노란 햇살 같은 행복이 가득하길! 💛✨
+        </p>
+        
+        <div class="heart-deco">💗💝💗</div>
+        
+        <div class="photo-gallery">
+            <img src="photo1.png" alt="우리 추억1" class="photo"> 
+        </div>
+
+        <div class="heart-deco">💓💞💓</div>
+        
+        <div class="letter">
+            📝 <strong style="color: #FF69B4;">너에게 보내는 편지 💌</strong><br><br>
+            추운 겨울 동안 힘든 치료 받느라 많이 힘들었지? 이제 점점 수치도 좋아지고 컨디션도 점점 더 좋아질거라 믿어!<br>
+            봄이 다가오고 따뜻한 햇살과 함께 건강도 행복도 활짝 피어날 거야 💛<br>
+            사랑하고 항상 응원해! 💕
+        </div>
+        
+        <div class="music-note">🎵🎶🎵</div>
+        <p style="margin-top: 20px; font-size: 1.2em; color: #FF69B4; font-weight: 600;">
+            생일 축하 노래 들으며 행복한 하루 보내! 💛🎂
+        </p>
+        
+        <div class="heart-deco">💖💕💗💝💓💞💖</div>
+    </div>
+    
+    <script>
+        // 미로 게임 로직
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+        const cellSize = 50;
+        const cols = 10;
+        const rows = 10;
+
+        // 미로 맵 (0: 길, 1: 벽) - 쉽게 수정
+        const maze = [
+            [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 1, 0, 1, 0, 1, 0, 1, 1, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+            [1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 1, 1, 1, 1, 0]
+        ];
+
+        let player = { x: 0, y: 0 };
+        const goal = { x: 9, y: 9 }; // 골 위치
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 미로 그리기
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (maze[row][col] === 1) {
+                        ctx.fillStyle = '#FFD700'; // 벽 색상
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                        ctx.strokeStyle = '#FFA500';
+                        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    } else {
+                        ctx.fillStyle = '#FFFEF0'; // 길 색상
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                        ctx.strokeStyle = '#F0F0F0';
+                        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            // 텍스트 정렬 설정
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // 골 지점 (선물 상자)
+            ctx.font = '35px Arial';
+            ctx.fillText('🎁', goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2);
+
+            // 플레이어 (귀여운 햄스터) 🐹
+            ctx.font = '35px Arial';
+            ctx.fillText('🐹', player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2);
+        }
+
+        // 플레이어 이동 함수
+        function movePlayer(dx, dy) {
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+
+            // 맵 밖으로 나가지 못하게
+            if (newX < 0 || newX >= cols || newY < 0 || newY >= rows) return;
+            
+            // 벽(1)이면 못 지나감
+            if (maze[newY][newX] === 1) return;
+
+            player.x = newX;
+            player.y = newY;
+            drawMaze();
+
+            // 골 도착 체크
+            if (player.x === goal.x && player.y === goal.y) {
+                setTimeout(() => {
+                    // 미로 숨기고 축하 화면 보여주기
+                    document.getElementById('mazeScreen').style.display = 'none';
+                    document.getElementById('birthdayScreen').classList.add('show');
+                    startAnimations(); // 배경 효과 시작
+                }, 300);
+            }
+        }
+
+        // 키보드 이벤트 (PC)
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('mazeScreen').style.display === 'none') return;
+            
+            switch(e.key) {
+                case 'ArrowUp': movePlayer(0, -1); break;
+                case 'ArrowDown': movePlayer(0, 1); break;
+                case 'ArrowLeft': movePlayer(-1, 0); break;
+                case 'ArrowRight': movePlayer(1, 0); break;
+            }
+        });
+
+        // 터치 이벤트 (모바일)
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            e.preventDefault(); // 스크롤 방지
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                movePlayer(dx > 0 ? 1 : -1, 0); // 좌우 이동
+            } else {
+                movePlayer(0, dy > 0 ? 1 : -1); // 상하 이동
+            }
+        });
+
+        // 게임 시작 시 그리기
+        drawMaze();
+
+        // 축하 애니메이션 (도착 후 실행됨)
+        function startAnimations() {
+            // 별 생성
+            function createStar() {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.innerHTML = '✨';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                document.getElementById('stars').appendChild(star);
+                
+                setTimeout(() => { star.remove(); }, 4000);
+            }
+            
+            // 하트 생성
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                const hearts = ['💕', '💖', '💗', '💝', '💓', '💞'];
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                document.getElementById('hearts').appendChild(heart);
+                
+                setTimeout(() => { heart.remove(); }, 7000);
+            }
+            
+            setInterval(createStar, 400);
+            setInterval(createHeart, 800);
+        }
+    </script>
+</body>
+</html>
