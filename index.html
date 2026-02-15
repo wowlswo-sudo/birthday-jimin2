@@ -2,19 +2,20 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>지민아 생일 축하해♡ ! 🎉</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap');
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Jua', 'Noto Sans KR', sans-serif;
             background: linear-gradient(135deg, #FFFF99 0%, #FFFF66 50%, #FFEB3B 100%);
             color: #333;
             min-height: 100vh;
@@ -25,6 +26,7 @@
             text-align: center;
             overflow-x: hidden;
             animation: bgGlow 3s ease-in-out infinite alternate;
+            touch-action: none; /* 스와이프 시 화면 스크롤 방지 */
         }
         
         @keyframes bgGlow {
@@ -32,20 +34,26 @@
             100% { filter: brightness(1.15); }
         }
 
-        /* 미로 게임 스타일 */
+        /* -------------------
+           게임 관련 스타일
+           ------------------- */
         .maze-container {
-            max-width: 600px;
-            padding: 40px 20px;
+            width: 95%;
+            max-width: 500px;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 30px;
             box-shadow: 0 20px 40px rgba(255,105,180,0.3);
             border: 4px solid #FFD700;
             z-index: 10;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .maze-title {
-            font-size: 2em;
+            font-size: 1.8em;
             color: #FF69B4;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(255,215,0,0.3);
@@ -58,25 +66,27 @@
             line-height: 1.6;
         }
 
-        #mazeCanvas {
-            border: 4px solid #FFD700;
-            border-radius: 15px;
-            background: white;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(255,215,0,0.4);
-            max-width: 100%;
-            touch-action: none; /* 모바일 터치 스크롤 방지 */
-        }
-
         .maze-hint {
             margin-top: 20px;
             font-size: 1em;
             color: #666;
         }
-        
-        /* 생일 축하 화면 (처음에는 숨김) */
+
+        #gameCanvas {
+            border-radius: 15px;
+            background: #FFF;
+            border: 4px solid #FFCA28;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 100%;
+            touch-action: none;
+        }
+
+        /* -------------------
+           축하 화면 스타일
+           ------------------- */
         .container {
             max-width: 800px;
+            width: 95%;
             padding: 40px 20px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 30px;
@@ -85,7 +95,7 @@
             position: relative;
             z-index: 10;
             border: 4px solid #FFD700;
-            display: none; /* 게임 클리어 전까지 안 보임 */
+            display: none; 
         }
 
         .container.show {
@@ -99,7 +109,7 @@
         }
         
         h1 {
-            font-size: 4em;
+            font-size: 2.5em;
             color: #FF69B4;
             text-shadow: 3px 3px 6px rgba(255,215,0,0.5);
             margin-bottom: 20px;
@@ -108,14 +118,14 @@
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
         
         .message {
-            font-size: 1.4em;
+            font-size: 1.2em;
             line-height: 1.6;
-            margin: 30px 0;
+            margin: 20px 0;
             color: #FF69B4;
             font-weight: 600;
         }
@@ -123,43 +133,34 @@
         .photo-gallery {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 40px 0;
+            margin: 30px 0;
         }
         
         .photo {
-            width: 500px;
-            height: 500px;
-            border-radius: 30px;
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 20px;
             object-fit: cover;
-            border: 10px solid #FFD700;
-            box-shadow: 0 15px 30px rgba(255,215,0,0.6);
-            transition: transform 0.3s ease;
-        }
-        
-        .photo:hover {
-            transform: scale(1.05) rotate(2deg);
+            border: 8px solid #FFD700;
+            box-shadow: 0 10px 20px rgba(255,215,0,0.4);
         }
         
         .letter {
             background: linear-gradient(135deg, #FFF9C4, #FFFACD);
-            padding: 35px;
+            padding: 25px;
             border-radius: 25px;
             margin: 30px 0;
-            border: 4px solid #FFD700;
-            font-size: 1.3em;
+            border: 3px solid #FFD700;
+            font-size: 1.1em;
             color: #555;
-            line-height: 1.8;
-            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
+            line-height: 1.7;
+            text-align: left;
         }
         
-        .hearts {
+        .hearts, .stars {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
         }
@@ -172,30 +173,6 @@
             opacity: 0.7;
         }
         
-        @keyframes floatHeart {
-            0% { 
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% { 
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
         .star {
             position: absolute;
             color: #FFD700;
@@ -203,38 +180,32 @@
             animation: twinkle 2s infinite;
         }
         
+        .heart-deco {
+            font-size: 1.5em;
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin: 5px;
+        }
+        
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.2); }
         }
-        
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5em; }
-            .photo { width: 90%; height: auto; }
-            .maze-title { font-size: 1.5em; }
-            .maze-instruction { font-size: 1em; }
-        }
-        
-        .music-note {
-            font-size: 3em;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        .heart-deco {
-            font-size: 2.5em;
-            display: inline-block;
-            animation: heartbeat 1.5s ease-in-out infinite;
-            margin: 0 10px;
-        }
-        
+
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 3.5em; }
+            .maze-title { font-size: 2.2em; }
         }
     </style>
 </head>
@@ -242,26 +213,28 @@
     <div class="stars" id="stars"></div>
     <div class="hearts" id="hearts"></div>
     
-    <!-- 미로 게임 화면 -->
-    <div class="maze-container" id="mazeScreen">
+    <!-- 게임 화면 -->
+    <div class="maze-container" id="gameScreen">
         <h2 class="maze-title">🎮 햄스터의 선물 찾기 🐹</h2>
         <p class="maze-instruction">
             💛 지민이의 생일 선물을 찾아줘! 💛<br>
             귀여운 햄스터를 움직여(방향키/터치)<br>
             골 지점까지 도착하세요!
         </p>
-        <canvas id="mazeCanvas" width="500" height="500"></canvas>
+
+        <canvas id="gameCanvas"></canvas>
         <p class="maze-hint">💡 힌트: 벽에 부딪히지 않도록 조심히 이동하세요!</p>
     </div>
 
-    <!-- 생일 축하 화면 -->
+    <!-- 축하 화면 -->
     <div class="container" id="birthdayScreen">
         <h1>💛 지민아 생일 축하해 💛</h1>
         
         <div class="heart-deco">💕💖💕</div>
         
         <p class="message">
-            올해는 더 건강하고 더 밝은 모습으로 노란 햇살 같은 행복이 가득하길! 💛✨
+            올해는 더 건강하고 더 밝은 모습으로<br>
+            노란 햇살 같은 행복이 가득하길! 💛✨
         </p>
         
         <div class="heart-deco">💗💝💗</div>
@@ -274,114 +247,172 @@
         
         <div class="letter">
             📝 <strong style="color: #FF69B4;">너에게 보내는 편지 💌</strong><br><br>
-            추운 겨울 동안 힘든 치료 받느라 많이 힘들었지? <br>
-            이제 점점 수치도 좋아지고 컨디션도 점점 더 좋아질거라 믿어!<br>
-            내년 생일에는 더 좋아진 컨디션으로 더 좋은곳에서 더 맛있는거 먹자💛 <br>사랑하고 항상 응원해!💕 <br>
+            추운 겨울 동안 힘든 치료 받느라 많이 힘들었지?<br> 
+            이제 점점 수치도 좋아지고 컨디션도 점점 더 좋아질거라 믿어!<br><br>
+            내년 생일에는 더 좋아진 컨디션으로 더 좋은 곳에서 더 맛있는 거 먹자 💛<br>
+            사랑하고 항상 응원해! 💕
         </div>
-        
-  
-        </p>
         
         <div class="heart-deco">💖💕💗💝💓💞💖</div>
     </div>
     
     <script>
-        // 미로 게임 로직
-        const canvas = document.getElementById('mazeCanvas');
+        const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const cellSize = 50;
-        const cols = 10;
-        const rows = 10;
-
-        // 미로 맵 (0: 길, 1: 벽) - 쉽게 수정
-        const maze = [
-            [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-            [0, 1, 0, 1, 0, 1, 0, 1, 1, 0],
-            [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-            [1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 1, 1, 1, 1, 0]
+        
+        const TILE_COUNT = 9;
+        let TILE_SIZE = 40;
+        
+        // 맵 데이터 (0:길, 1:벽, 2:하트아이템, 9:도착점)
+        const map = [
+            [0, 0, 0, 1, 2, 0, 0, 1, 2],
+            [1, 1, 0, 1, 1, 1, 0, 1, 0],
+            [2, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [0, 0, 2, 1, 0, 0, 0, 0, 0],
+            [0, 1, 0, 1, 1, 1, 1, 1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 1, 0, 1, 1],
+            [0, 2, 0, 0, 0, 1, 0, 0, 9]
         ];
 
-        let player = { x: 0, y: 0 };
-        const goal = { x: 9, y: 9 }; // 골 위치
+        const player = {
+            gridX: 0, gridY: 0, 
+            x: 0, y: 0,
+            dir: 1
+        };
 
-        function drawMaze() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let particles = [];
+
+        function resize() {
+            const maxSize = Math.min(window.innerWidth - 60, 360);
+            canvas.width = maxSize;
+            canvas.height = maxSize;
+            TILE_SIZE = maxSize / TILE_COUNT;
             
-            // 미로 그리기
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    if (maze[row][col] === 1) {
-                        ctx.fillStyle = '#FFD700'; // 벽 색상
-                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                        ctx.strokeStyle = '#FFA500';
-                        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                    } else {
-                        ctx.fillStyle = '#FFFEF0'; // 길 색상
-                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                        ctx.strokeStyle = '#F0F0F0';
-                        ctx.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            player.x = player.gridX * TILE_SIZE;
+            player.y = player.gridY * TILE_SIZE;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            const targetX = player.gridX * TILE_SIZE;
+            const targetY = player.gridY * TILE_SIZE;
+            player.x += (targetX - player.x) * 0.2;
+            player.y += (targetY - player.y) * 0.2;
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].life--;
+                particles[i].x += particles[i].vx;
+                particles[i].y += particles[i].vy;
+                if (particles[i].life <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < TILE_COUNT; y++) {
+                for (let x = 0; x < TILE_COUNT; x++) {
+                    const type = map[y][x];
+                    const posX = x * TILE_SIZE;
+                    const posY = y * TILE_SIZE;
+
+                    if (type === 1) { // 치즈 벽
+                        ctx.fillStyle = '#FFD54F';
+                        drawRoundedRect(posX + 1, posY + 1, TILE_SIZE - 2, TILE_SIZE - 2, 5);
+                        ctx.fillStyle = '#FFECB3';
+                        ctx.beginPath(); ctx.arc(posX + TILE_SIZE*0.3, posY + TILE_SIZE*0.3, TILE_SIZE*0.1, 0, Math.PI*2); ctx.fill();
+                    } else if (type === 2) { // 하트
+                        const float = Math.sin(Date.now() / 200) * 3;
+                        ctx.font = `${TILE_SIZE * 0.6}px Arial`;
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        ctx.fillText('💖', posX + TILE_SIZE/2, posY + TILE_SIZE/2 + float);
+                    } else if (type === 9) { // 도착 선물
+                        const scale = 1 + Math.sin(Date.now() / 300) * 0.1;
+                        ctx.save();
+                        ctx.translate(posX + TILE_SIZE/2, posY + TILE_SIZE/2);
+                        ctx.scale(scale, scale);
+                        ctx.font = `${TILE_SIZE * 0.7}px Arial`;
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        ctx.fillText('🎁', 0, 0);
+                        ctx.restore();
                     }
                 }
             }
 
-            // 텍스트 정렬 설정
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
 
-            // 골 지점 (선물 상자)
-            ctx.font = '35px Arial';
-            ctx.fillText('🎁', goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2);
-
-            // 플레이어 (귀여운 햄스터) 🐹
-            ctx.font = '35px Arial';
-            ctx.fillText('🐹', player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2);
+            // 플레이어
+            ctx.save();
+            ctx.translate(player.x + TILE_SIZE/2, player.y + TILE_SIZE/2);
+            if (player.dir === -1) ctx.scale(-1, 1);
+            const bounce = Math.abs(Math.sin(Date.now() / 150)) * 5;
+            ctx.font = `${TILE_SIZE * 0.8}px Arial`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('🐹', 0, -bounce);
+            ctx.restore();
         }
 
-        // 플레이어 이동 함수
-        function movePlayer(dx, dy) {
-            const newX = player.x + dx;
-            const newY = player.y + dy;
+        function drawRoundedRect(x, y, w, h, r) {
+            ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+            ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h);
+            ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.fill();
+        }
 
-            // 맵 밖으로 나가지 못하게
-            if (newX < 0 || newX >= cols || newY < 0 || newY >= rows) return;
-            
-            // 벽(1)이면 못 지나감
-            if (maze[newY][newX] === 1) return;
+        function move(dx, dy) {
+            const nextX = player.gridX + dx;
+            const nextY = player.gridY + dy;
 
-            player.x = newX;
-            player.y = newY;
-            drawMaze();
+            if (nextX < 0 || nextX >= TILE_COUNT || nextY < 0 || nextY >= TILE_COUNT) return;
+            if (map[nextY][nextX] === 1) return;
 
-            // 골 도착 체크
-            if (player.x === goal.x && player.y === goal.y) {
+            if (dx !== 0) player.dir = dx;
+
+            if (map[nextY][nextX] === 2) {
+                map[nextY][nextX] = 0;
+                createParticles(nextX * TILE_SIZE + TILE_SIZE/2, nextY * TILE_SIZE + TILE_SIZE/2, 'heart');
+            }
+
+            player.gridX = nextX;
+            player.gridY = nextY;
+            createParticles(player.x + TILE_SIZE/2, player.y + TILE_SIZE, 'dust');
+
+            if (map[nextY][nextX] === 9) {
                 setTimeout(() => {
-                    // 미로 숨기고 축하 화면 보여주기
-                    document.getElementById('mazeScreen').style.display = 'none';
+                    document.getElementById('gameScreen').style.display = 'none';
                     document.getElementById('birthdayScreen').classList.add('show');
-                    startAnimations(); // 배경 효과 시작
-                }, 300);
+                    startBgAnimations();
+                }, 500);
             }
         }
 
-        // 키보드 이벤트 (PC)
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById('mazeScreen').style.display === 'none') return;
-            
-            switch(e.key) {
-                case 'ArrowUp': movePlayer(0, -1); break;
-                case 'ArrowDown': movePlayer(0, 1); break;
-                case 'ArrowLeft': movePlayer(-1, 0); break;
-                case 'ArrowRight': movePlayer(1, 0); break;
+        function createParticles(x, y, type) {
+            for (let i = 0; i < 5; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    life: 20,
+                    size: Math.random() * 3 + 2,
+                    color: type === 'heart' ? '#FF69B4' : '#FFF'
+                });
             }
-        });
+        }
 
-        // 터치 이벤트 (모바일)
+        // 터치 스와이프 기능 (키패드 대신)
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -397,47 +428,51 @@
             const dx = touchEndX - touchStartX;
             const dy = touchEndY - touchStartY;
 
+            // 터치 이동 거리가 너무 짧으면 무시 (오터치 방지)
+            if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+
             if (Math.abs(dx) > Math.abs(dy)) {
-                movePlayer(dx > 0 ? 1 : -1, 0); // 좌우 이동
+                move(dx > 0 ? 1 : -1, 0); // 좌우
             } else {
-                movePlayer(0, dy > 0 ? 1 : -1); // 상하 이동
+                move(0, dy > 0 ? 1 : -1); // 상하
             }
         });
 
-        // 게임 시작 시 그리기
-        drawMaze();
+        // PC 키보드 지원
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('gameScreen').style.display === 'none') return;
+            if (e.key === 'ArrowUp') move(0, -1);
+            if (e.key === 'ArrowDown') move(0, 1);
+            if (e.key === 'ArrowLeft') move(-1, 0);
+            if (e.key === 'ArrowRight') move(1, 0);
+        });
 
-        // 축하 애니메이션 (도착 후 실행됨)
-        function startAnimations() {
-            // 별 생성
-            function createStar() {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.innerHTML = '✨';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                document.getElementById('stars').appendChild(star);
+        // 시작
+        requestAnimationFrame(gameLoop);
+
+        function startBgAnimations() {
+            function createItem(className, text, duration) {
+                const item = document.createElement('div');
+                item.className = className;
+                item.innerHTML = text;
+                item.style.left = Math.random() * 100 + '%';
                 
-                setTimeout(() => { star.remove(); }, 4000);
+                if(className === 'heart') {
+                    item.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    document.getElementById('hearts').appendChild(item);
+                } else {
+                    item.style.top = Math.random() * 100 + '%';
+                    document.getElementById('stars').appendChild(item);
+                }
+                
+                setTimeout(() => item.remove(), duration);
             }
-            
-            // 하트 생성
-            function createHeart() {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
+
+            setInterval(() => createItem('star', '✨', 4000), 400);
+            setInterval(() => {
                 const hearts = ['💕', '💖', '💗', '💝', '💓', '💞'];
-                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                heart.style.animationDelay = Math.random() * 2 + 's';
-                document.getElementById('hearts').appendChild(heart);
-                
-                setTimeout(() => { heart.remove(); }, 7000);
-            }
-            
-            setInterval(createStar, 400);
-            setInterval(createHeart, 800);
+                createItem('heart', hearts[Math.floor(Math.random() * hearts.length)], 7000);
+            }, 800);
         }
     </script>
 </body>
